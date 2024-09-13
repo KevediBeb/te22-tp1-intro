@@ -2,7 +2,7 @@ import random
 import time
 
 #win condition
-winCon = 30
+winCon = 20
 
 #player cash
 p = 0
@@ -28,9 +28,18 @@ roundtype = 0
 # 1 = Computer
 turn = 0
 
+pauseTime = 0.8
+
 #name = input("What is your name? ")
 #print(f"Hello there, {name}!")
-def CompareDice(type, t, c, p):
+
+def Message(msg, mult):
+    print(msg)
+    time.sleep(pauseTime+mult) 
+
+    
+
+def CompareDice(type, t, lives):
     cEven = True
     if(cDice % 2):
         cEven = True
@@ -47,23 +56,47 @@ def CompareDice(type, t, c, p):
     match = False
     if(t > 1):
         if((cEven and pEven) or (cEven == False and pEven == False)):
-            print("We have a match!")
+            Message("BUT... we have a match!", 1)
             match = True
 
     if(type == 0):
+        if(lives >= winCon):
+            Message("Player Won!", 0)
+            exit(1)
+        if(lives <= 0):
+            Message("Computer Won!", 0)
+            exit(1)
         #Computer hurt
         if(match == True):
-            p -= cDice
-            print(f"Computer ripped out {cDice} lives from Player!")
-            print(f"Player now has {p} lives left!")
+            lives = p
+            lives -= cDice
+            Message(f"Computer ripped out {cDice} lives from Player!", 0)
+            #Message(f"Player now has {p} lives left!", 0)
+        
+            
     else:
+        if(lives >= winCon):
+            Message("Computer Won!", 0)
+            exit(1)
+        if(lives <= 0):
+            Message("Player Won!", 0)
+            exit(1)
         #Player hurt
         if(match == True):
-            c -= pDice
-            print(f"Player ripped out {pDice} lives from Computer!")
-            print(f"Computer now has {c} lives left!")
-
+            lives = c
+            lives -= pDice
+            Message(f"Player ripped out {pDice} lives from Computer!", 0)
+            #Message(f"Computer now has {c} lives left!", 0)
         
+
+            
+
+    #RETURN C,P!!!!!!!!!!!
+
+    
+
+
+    return lives
 
 
         
@@ -76,13 +109,14 @@ def CompareDice(type, t, c, p):
 
 while(pDead == False or cDead == False):    
     turn += 1
-    print(f"round: {turn}")
-    print(f"player lives: {p}")
-    print(f"computer lives: {c}")
+    Message(f"round: {turn}", 0)
+    Message(f"player's lives: {p}", 0)
+    Message(f"computer's lives: {c}", 0)
+    time.sleep(pauseTime) 
     if(roundtype == 1):
         # PLAYER TURN
         roundtype = 0
-        print("Player's turn!")
+        Message("Player's turn!", 0)
         
         fail = True
         while(fail == True):
@@ -90,10 +124,10 @@ while(pDead == False or cDead == False):
             if(putIn == "roll"):
                 fail = False
                 pDice = random.randint(1,6)
-                print(f"Player rolled:  {pDice}!")
+                Message(f"Player rolled:  {pDice}!", 0)
                 p += pDice
-                print(f"Player now has: {p} lives!")  
-                CompareDice(roundtype, turn, c, p)
+                Message(f"Player now has: {p} lives!", 0)
+                p = CompareDice(roundtype, turn, p)
             else:
                 fail = True
     
@@ -103,21 +137,22 @@ while(pDead == False or cDead == False):
         # COMPUTER TURN
         
         roundtype = 1
-        print("Computer's turn!")
-        time.sleep(1) 
+        Message("Computer's turn!", 0)
         print("Computer is currently pondering...")
         time.sleep(2) 
         cDice = random.randint(1,6)
-        print(f"Computer rolled:  {cDice}!")
+        Message(f"Computer rolled:  {cDice}!", 0)
+        
         c += cDice
-        print(f"Computer now has: {c} lives!")
-        CompareDice(roundtype, turn, c, p)
+        Message(f"Computer now has: {c} lives!", 0)
+        
+        c = CompareDice(roundtype, turn, c)
 
 
 
         
 
-    print(roundtype)
+    #print(roundtype)
     
 
 
